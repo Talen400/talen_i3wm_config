@@ -155,7 +155,7 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id dunst
 
 # Wallpaper + pywal (generates colors for alacritty, rofi, etc.)
-exec_always wal -i ~/Imagens/wallpapers/wallpaper.png
+exec_always wal -i ~/Imagens/wallpapers/wallpaper.png 2>/dev/null
 
 # Bar
 exec_always polybar main &

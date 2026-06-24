@@ -13,6 +13,25 @@ echo -e "╚══════════════════════�
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ──────────────────────────────────────────────────
+# PLATFORM DETECTION
+# ──────────────────────────────────────────────────
+detect_platform() {
+    if command -v VBoxControl &> /dev/null || \
+       lspci 2>/dev/null | grep -qi "virtualbox" || \
+       systemd-detect-virt 2>/dev/null | grep -qi "oracle"; then
+        echo "virtualbox"
+    elif lspci 2>/dev/null | grep -qi "vmware" || \
+         systemd-detect-virt 2>/dev/null | grep -qi "vmware"; then
+        echo "vmware"
+    else
+        echo "bare-metal"
+    fi
+}
+
+PLATFORM=$(detect_platform)
+echo -e "${GREEN}✓${NC} Platform detected: ${PLATFORM}"
+
+# ──────────────────────────────────────────────────
 # 1. INSTALL DEPENDENCIES (Arch Linux)
 # ──────────────────────────────────────────────────
 echo -e "\n${GREEN}[1/5] Checking dependencies...${NC}"
@@ -48,9 +67,18 @@ PACKAGES_XORG=(
     xorg xorg-xinit
 )
 
-PACKAGES_VBOX=(
-    virtualbox-guest-utils mesa
-)
+PACKAGES_PLATFORM=()
+case "$PLATFORM" in
+    virtualbox)
+        PACKAGES_PLATFORM=(virtualbox-guest-utils mesa)
+        ;;
+    vmware)
+        PACKAGES_PLATFORM=(open-vm-tools xf86-video-vmware mesa)
+        ;;
+    bare-metal)
+        PACKAGES_PLATFORM=(mesa)
+        ;;
+esac
 
 ALL_PACKAGES=(
     "${PACKAGES_BASE[@]}"
@@ -60,7 +88,7 @@ ALL_PACKAGES=(
     "${PACKAGES_GTK[@]}"
     "${PACKAGES_SDDM[@]}"
     "${PACKAGES_XORG[@]}"
-    "${PACKAGES_VBOX[@]}"
+    "${PACKAGES_PLATFORM[@]}"
 )
 
 # Check if running Arch
@@ -81,14 +109,38 @@ else
 fi
 
 # ──────────────────────────────────────────────────
-# 1.5 VIRTUALBOX SETUP
+# 1.5 HYPERVISOR SETUP
 # ──────────────────────────────────────────────────
-if command -v VBoxControl &> /dev/null || lspci | grep -qi "virtualbox"; then
-    echo -e "\n${GREEN}[1.5/5] VirtualBox detected. Setting up guest utilities...${NC}"
-    sudo systemctl enable vboxservice
-    sudo usermod -aG video,input "$USER"
-    echo -e "${GREEN}✓${NC} vboxservice enabled, user added to video/input groups"
-fi
+case "$PLATFORM" in
+    virtualbox)
+        echo -e "\n${GREEN}[1.5/5] VirtualBox detected. Setting up guest utilities...${NC}"
+
+        # Remove conflicting VMware driver if present
+        if pacman -Qi xf86-video-vmware &>/dev/null; then
+            sudo pacman -Rns --noconfirm xf86-video-vmware
+        fi
+
+        sudo systemctl enable vboxservice
+        sudo usermod -aG video,input "$USER"
+
+        # Install Xorg modesetting config if not already present
+        if [ -f "$DOTFILES_DIR/xorg/20-vbox.conf" ]; then
+            sudo mkdir -p /etc/X11/xorg.conf.d
+            sudo cp "$DOTFILES_DIR/xorg/20-vbox.conf" /etc/X11/xorg.conf.d/20-vbox.conf
+            echo -e "${GREEN}✓${NC} Xorg modesetting config installed"
+        fi
+
+        echo -e "${GREEN}✓${NC} vboxservice enabled, user added to video/input groups"
+        ;;
+    vmware)
+        echo -e "\n${GREEN}[1.5/5] VMware detected. Setting up guest tools...${NC}"
+        sudo systemctl enable vmtoolsd
+        echo -e "${GREEN}✓${NC} vmtoolsd enabled"
+        ;;
+    bare-metal)
+        echo -e "\n${GREEN}[1.5/5] Bare-metal detected. No hypervisor setup needed.${NC}"
+        ;;
+esac
 
 # ──────────────────────────────────────────────────
 # 2. CREATE DIRECTORIES
@@ -151,7 +203,7 @@ if [ -f "$DOTFILES_DIR/wallpapers/wallpaper.png" ]; then
 
     # Generate color palette with pywal
     if command -v wal &> /dev/null; then
-        wal -i "$HOME/Imagens/wallpapers/wallpaper.png" -e -q
+        wal -i "$HOME/Imagens/wallpapers/wallpaper.png" -e -q 2>/dev/null
         echo -e "${GREEN}✓${NC} Pywal: palette generated from wallpaper"
     else
         echo -e "${YELLOW}⚠ pywal not installed. Install python-pywal.${NC}"
