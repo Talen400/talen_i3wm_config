@@ -1,0 +1,21 @@
+# Modificador (Alt ou Super, você escolhe)
+set $mod Mod1   # Alt
+
+# Cores das bordas
+client.focused          #6A9BB0 #6A9BB0 #C0CAF5 #6A9BB0   #6A9BB0
+client.focused_inactive #5C4A72 #5C4A72 #C0CAF5 #5C4A72   #5C4A72
+client.unfocused        #1A1B26 #1A1B26 #888888 #1A1B26   #1A1B26
+client.urgent           #E88C7D #E88C7D #1A1B26 #E88C7D   #E88C7D
+client.placeholder      #1A1B26 #1A1B26 #C0CAF5 #1A1B26   #1A1B26
+client.background       #1A1B26
+
+# Wallpaper
+exec_always feh --bg-fill ~/Imagens/wallpapers/frieren.jpg
+
+# Bar (Polybar)
+exec_always polybar main &
+
+# Compositor (Picom)
+exec_always picom --config ~/.config/picom/picom.conf &
+
+# Demais atalhos (mantenha os seus)
