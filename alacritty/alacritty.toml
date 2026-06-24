@@ -1,0 +1,50 @@
+[env]
+TERM = "alacritty"
+
+[window]
+opacity = 0.93
+decorations = "full"
+dynamic_padding = true
+
+[window.padding]
+x = 4
+y = 4
+
+[font]
+size = 11
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[colors.primary]
+background = "#0F0E17"
+foreground = "#E0E0E0"
+
+[colors.normal]
+black = "#1A1A2E"
+red = "#FF6B9D"
+green = "#7BC67E"
+yellow = "#D4AF37"
+blue = "#7DC4E4"
+magenta = "#A77BFF"
+cyan = "#50C8B8"
+white = "#E0E0E0"
+
+[colors.bright]
+black = "#444466"
+red = "#FF8FB6"
+green = "#9ED9A0"
+yellow = "#E8C95A"
+blue = "#9ED9F0"
+magenta = "#C0A0FF"
+cyan = "#7AD8CC"
+white = "#FFFFFF"

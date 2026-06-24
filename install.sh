@@ -43,6 +43,14 @@ PACKAGES_SDDM=(
     sddm qt5-declarative qt5-graphicaleffects qt5-quickcontrols2 qt5-svg
 )
 
+PACKAGES_XORG=(
+    xorg xorg-xinit
+)
+
+PACKAGES_VBOX=(
+    virtualbox-guest-utils mesa
+)
+
 ALL_PACKAGES=(
     "${PACKAGES_BASE[@]}"
     "${PACKAGES_WALL[@]}"
@@ -50,6 +58,8 @@ ALL_PACKAGES=(
     "${PACKAGES_UTIL[@]}"
     "${PACKAGES_GTK[@]}"
     "${PACKAGES_SDDM[@]}"
+    "${PACKAGES_XORG[@]}"
+    "${PACKAGES_VBOX[@]}"
 )
 
 # Check if running Arch
@@ -67,6 +77,16 @@ else
     echo -e "${YELLOW}⚠ Arch Linux not detected (pacman not found)"
     echo -e "  Install packages manually:${NC}"
     echo "  ${ALL_PACKAGES[*]}"
+fi
+
+# ──────────────────────────────────────────────────
+# 1.5 VIRTUALBOX SETUP
+# ──────────────────────────────────────────────────
+if command -v VBoxControl &> /dev/null || lspci | grep -qi "virtualbox"; then
+    echo -e "\n${GREEN}[1.5/5] VirtualBox detected. Setting up guest utilities...${NC}"
+    sudo systemctl enable vboxservice
+    sudo usermod -aG video,input "$USER"
+    echo -e "${GREEN}✓${NC} vboxservice enabled, user added to video/input groups"
 fi
 
 # ──────────────────────────────────────────────────
@@ -97,13 +117,20 @@ install_config() {
 }
 
 # Standard configs (folder → ~/.config/folder/)
-for cfg in i3 polybar alacritty rofi picom dunst; do
+for cfg in i3 polybar rofi picom dunst; do
     if [ -d "$DOTFILES_DIR/$cfg" ]; then
         install_config "$cfg" "$HOME/.config/$cfg"
     else
         echo -e "${YELLOW}❌ Folder $cfg not found${NC}"
     fi
 done
+
+# Alacritty — cleanup old folder symlink, then link single file
+if [ -L "$HOME/.config/alacritty" ]; then
+    rm -f "$HOME/.config/alacritty"
+fi
+mkdir -p "$HOME/.config/alacritty"
+install_config "alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 
 # GTK (different paths)
 install_config "gtk/settings.ini" "$HOME/.config/gtk-3.0/settings.ini"

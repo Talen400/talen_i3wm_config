@@ -1,7 +1,6 @@
 import QtQuick 2.11
-import QtQuick.Controls 2.4
+import QtQuick.Controls 2.11
 import QtQuick.Layouts 1.11
-import QtGraphicalEffects 1.0
 import SddmComponents 2.0
 
 Rectangle {
@@ -12,27 +11,19 @@ Rectangle {
 
     property string fontFamily: "JetBrainsMono Nerd Font"
 
-    // ── Background: wallpaper + blur + overlay ──
+    // ── Background: wallpaper + dark overlay (no GPU blur) ──
     Image {
         id: background
         source: "/usr/share/sddm/themes/simple-frieren/frieren.jpg"
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
-        sourceSize.width: width
-        sourceSize.height: height
-    }
-
-    FastBlur {
-        anchors.fill: background
-        source: background
-        radius: 64
     }
 
     Rectangle {
         anchors.fill: parent
         color: "#0F0E17"
-        opacity: 0.35
+        opacity: 0.55
     }
 
     // ── Clock ──
@@ -103,7 +94,7 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "🧙"
+                    text: "\uD83E\uDDD9"
                     font.pointSize: 32
                 }
             }
@@ -145,7 +136,7 @@ Rectangle {
                 font.pointSize: 14
                 color: "#E0E0E0"
                 leftPadding: 14
-                KeyNavigation.tab: loginButton
+                KeyNavigation.tab: loginBtn
                 Keys.onReturnPressed: login()
 
                 background: Rectangle {
@@ -159,119 +150,79 @@ Rectangle {
             }
 
             // ── Sign In button ──
-            Button {
-                id: loginButton
+            Rectangle {
+                id: loginBtn
                 Layout.fillWidth: true
                 Layout.preferredHeight: 46
                 Layout.topMargin: 4
-                font.family: fontFamily
-                font.pointSize: 13
-                font.bold: true
-                KeyNavigation.tab: sessionSelector
+                radius: 10
+                color: loginBtnMouse.containsMouse ? "#C0A0FF" : "#A77BFF"
+                focus: true
                 Keys.onReturnPressed: login()
 
-                background: Rectangle {
-                    radius: 10
-                    color: loginButton.hovered ? "#C0A0FF" : "#A77BFF"
-                }
-
-                contentItem: Text {
+                Text {
+                    anchors.centerIn: parent
                     text: "Sign In"
-                    font: loginButton.font
+                    font.family: fontFamily
+                    font.pointSize: 13
+                    font.bold: true
                     color: "#0F0E17"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
                 }
 
-                onClicked: login()
+                MouseArea {
+                    id: loginBtnMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: login()
+                    cursorShape: Qt.PointingHandCursor
+                }
             }
 
             // ── Session selector ──
-            ComboBox {
-                id: sessionSelector
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 38
-                font.family: fontFamily
-                font.pointSize: 10
-                model: sddm.sessions
-                textRole: "name"
-                currentIndex: {
-                    var idx = 0
-                    for (var i = 0; i < sddm.sessions.length; i++) {
-                        if (sddm.sessions[i].name.toLowerCase().indexOf("i3") !== -1) {
-                            idx = i
-                            break
-                        }
-                    }
-                    return idx
-                }
+                radius: 8
+                color: "#0F0E17"
+                border.color: "#444466"
+                border.width: 1
 
-                background: Rectangle {
-                    radius: 8
-                    color: "#0F0E17"
-                    border.color: sessionSelector.activeFocus ? "#A77BFF" : "#444466"
-                    border.width: sessionSelector.activeFocus ? 2 : 1
-                }
-
-                contentItem: Text {
-                    text: sessionSelector.displayText
-                    font: sessionSelector.font
-                    color: "#E0E0E0"
-                    verticalAlignment: Text.AlignVCenter
-                    leftPadding: 10
-                }
-
-                indicator: Canvas {
+                Text {
+                    id: sessionText
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
+                    text: "Session: i3"
+                    font.family: fontFamily
+                    font.pointSize: 10
+                    color: "#E0E0E0"
+                }
+
+                Text {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
-                    width: 10
-                    height: 6
-                    onPaint: {
-                        var ctx = getContext("2d")
-                        ctx.fillStyle = "#A77BFF"
-                        ctx.moveTo(0, 0)
-                        ctx.lineTo(width / 2, height)
-                        ctx.lineTo(width, 0)
-                        ctx.closePath()
-                        ctx.fill()
-                    }
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "\u25BC"
+                    color: "#A77BFF"
+                    font.pointSize: 8
                 }
 
-                delegate: ItemDelegate {
-                    width: sessionSelector.width
-                    contentItem: Text {
-                        text: model.name
-                        font: sessionSelector.font
-                        color: highlighted ? "#0F0E17" : "#E0E0E0"
-                        leftPadding: 10
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        var sessions = sddm.sessions
+                        var current = -1
+                        for (var i = 0; i < sessions.length; i++) {
+                            parent.forceActiveFocus()
+                            if (sessions[i].name === sessionText.text.replace("Session: ", "")) {
+                                current = i
+                                break
+                            }
+                        }
+                        var next = (current + 1) % sessions.length
+                        sessionText.text = "Session: " + sessions[next].name
                     }
-                    highlighted: sessionSelector.highlightedIndex === index
-                    background: Rectangle {
-                        color: highlighted ? "#A77BFF" : "#1A1630"
-                    }
-                }
-
-                popup: Popup {
-                    y: sessionSelector.height + 2
-                    width: sessionSelector.width
-                    implicitHeight: Math.min(contentItem.implicitHeight, 200)
-                    padding: 1
-
-                    contentItem: ListView {
-                        clip: true
-                        implicitHeight: contentHeight
-                        model: sessionSelector.popup.visible ? sessionSelector.delegateModel : null
-                        currentIndex: sessionSelector.highlightedIndex
-                        ScrollIndicator.vertical: ScrollIndicator {}
-                    }
-
-                    background: Rectangle {
-                        color: "#1A1630"
-                        radius: 8
-                        border.color: "#A77BFF"
-                        border.width: 1
-                    }
+                    cursorShape: Qt.PointingHandCursor
                 }
             }
 
@@ -312,7 +263,7 @@ Rectangle {
                 spacing: 2
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "⏻"
+                    text: "\u23F1"
                     color: "#E0E0E0"
                     font.pointSize: 20
                 }
@@ -348,7 +299,7 @@ Rectangle {
                 spacing: 2
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "↻"
+                    text: "\u21BB"
                     color: "#E0E0E0"
                     font.pointSize: 20
                 }
@@ -375,7 +326,14 @@ Rectangle {
     function login() {
         errorMessage.visible = false
         errorMessage.text = ""
-        sddm.login(userInput.text, passwordInput.text, sessionSelector.currentIndex)
+        var sessionName = sessionText.text.replace("Session: ", "")
+        for (var i = 0; i < sddm.sessions.length; i++) {
+            if (sddm.sessions[i].name === sessionName) {
+                sddm.login(userInput.text, passwordInput.text, i)
+                return
+            }
+        }
+        sddm.login(userInput.text, passwordInput.text, 0)
     }
 
     Connections {
