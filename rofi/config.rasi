@@ -15,15 +15,15 @@ configuration {
     active:         #7DC4E4;
     urgent:         #FF6B9D;
 
-    bg-col:         @background;
-    fg-col:         @foreground;
-    bd-col:         @selected;
-    input-col:      @foreground;
-    cursor-col:     @selected;
-    scrollbar-col:  @selected;
-    highlight:      @selected;
+    bg-col:         #0F0E17;
+    fg-col:         #E0E0E0;
+    bd-col:         #A77BFF;
+    input-col:      #E0E0E0;
+    cursor-col:     #A77BFF;
+    scrollbar-col:  #A77BFF;
+    highlight:      #A77BFF;
 
-    border-col:     @bd-col;
+    border-col:     #A77BFF;
     spacing:        2;
     padding:        2;
     layout:         vertical;
@@ -34,23 +34,23 @@ window {
     height:         400;
     border:         2;
     border-radius:  12;
-    border-color:   @border-col;
-    background-color: @bg-col;
+    border-color:   #A77BFF;
+    background-color: #0F0E17;
     transparency:   "real";
 }
 
 inputbar {
-    background-color: @bg-col;
-    text-color:       @input-col;
+    background-color: #0F0E17;
+    text-color:       #E0E0E0;
     spacing:          12;
     padding:          8;
     children:         [ "entry", "dummy", "indicator" ];
 }
 
 entry {
-    background-color: @background-alt;
-    text-color:       @input-col;
-    cursor-color:     @cursor-col;
+    background-color: #1A1630;
+    text-color:       #E0E0E0;
+    cursor-color:     #A77BFF;
     placeholder:      "Search...";
     placeholder-color: #888888;
     padding:          8;
@@ -75,27 +75,27 @@ element {
     padding:          8;
     border-radius:    8;
     background-color: transparent;
-    text-color:       @fg-col;
+    text-color:       #E0E0E0;
 }
 
 element selected {
-    background-color: @selected;
-    text-color:       @background;
+    background-color: #A77BFF;
+    text-color:       #0F0E17;
 }
 
 element urgent {
-    background-color: @urgent;
-    text-color:       @background;
+    background-color: #FF6B9D;
+    text-color:       #0F0E17;
 }
 
 element active {
-    background-color: @active;
-    text-color:       @background;
+    background-color: #7DC4E4;
+    text-color:       #0F0E17;
 }
 
 element normal {
     background-color: transparent;
-    text-color:       @fg-col;
+    text-color:       #E0E0E0;
 }
 
 element-icon {
@@ -109,17 +109,17 @@ element-text {
 }
 
 scrollbar {
-    handle-color:     @selected;
+    handle-color:     #A77BFF;
     handle-width:     4;
     border-radius:    4;
 }
 
 button {
-    text-color:       @fg-col;
-    background-color: @bg-col;
+    text-color:       #E0E0E0;
+    background-color: #0F0E17;
 }
 
 button selected {
-    background-color: @selected;
-    text-color:       @background;
+    background-color: #A77BFF;
+    text-color:       #0F0E17;
 }

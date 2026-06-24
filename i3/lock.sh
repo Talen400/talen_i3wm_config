@@ -1,5 +1,5 @@
 #!/bin/bash
-WALLPAPER=~/Imagens/wallpapers/frieren.jpg
+WALLPAPER=~/Imagens/wallpapers/wallpaper.png
 
 i3lock \
     -i "$WALLPAPER" \

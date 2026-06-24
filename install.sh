@@ -32,7 +32,8 @@ PACKAGES_FONT=(
 
 PACKAGES_UTIL=(
     network-manager-applet polkit-gnome xfce4-power-manager
-    flameshot light
+    flameshot light jq
+    xdg-desktop-portal xdg-desktop-portal-gtk
 )
 
 PACKAGES_GTK=(
@@ -125,6 +126,10 @@ for cfg in i3 polybar rofi picom dunst; do
     fi
 done
 
+# Make lock/dwindle scripts executable
+chmod +x "$HOME/.config/i3/lock.sh" 2>/dev/null || true
+chmod +x "$HOME/.config/i3/dwindle.sh" 2>/dev/null || true
+
 # Alacritty — cleanup old folder symlink, then link single file
 if [ -L "$HOME/.config/alacritty" ]; then
     rm -f "$HOME/.config/alacritty"
@@ -146,7 +151,7 @@ if [ -f "$DOTFILES_DIR/wallpapers/wallpaper.png" ]; then
 
     # Generate color palette with pywal
     if command -v wal &> /dev/null; then
-        wal -i "$HOME/Imagens/wallpapers/wallpaper.png" -q
+        wal -i "$HOME/Imagens/wallpapers/wallpaper.png" -e -q
         echo -e "${GREEN}✓${NC} Pywal: palette generated from wallpaper"
     else
         echo -e "${YELLOW}⚠ pywal not installed. Install python-pywal.${NC}"

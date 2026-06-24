@@ -27,6 +27,9 @@ smart_borders on
 # Terminal
 bindsym $mod+Return exec alacritty
 
+# Terminal (dwindle/fibonacci layout like Hyprland)
+bindsym $mod+Ctrl+Return exec ~/.config/i3/dwindle.sh
+
 # Close window
 bindsym $mod+q kill
 
@@ -152,7 +155,7 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id dunst
 
 # Wallpaper + pywal (generates colors for alacritty, rofi, etc.)
-exec_always wal -i ~/Imagens/wallpapers/frieren.jpg
+exec_always wal -i ~/Imagens/wallpapers/wallpaper.png
 
 # Bar
 exec_always polybar main &
