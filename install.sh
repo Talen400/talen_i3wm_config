@@ -141,18 +141,18 @@ install_config "gtk/.gtkrc-2.0"   "$HOME/.gtkrc-2.0"
 # ──────────────────────────────────────────────────
 echo -e "\n${GREEN}[4/5] Setting up wallpaper...${NC}"
 
-if [ -f "$DOTFILES_DIR/wallpapers/frieren.jpg" ]; then
-    cp "$DOTFILES_DIR/wallpapers/frieren.jpg" "$HOME/Imagens/wallpapers/frieren.jpg"
+if [ -f "$DOTFILES_DIR/wallpapers/wallpaper.png" ]; then
+    cp "$DOTFILES_DIR/wallpapers/wallpaper.png" "$HOME/Imagens/wallpapers/wallpaper.png"
 
     # Generate color palette with pywal
     if command -v wal &> /dev/null; then
-        wal -i "$HOME/Imagens/wallpapers/frieren.jpg" -q
+        wal -i "$HOME/Imagens/wallpapers/wallpaper.png" -q
         echo -e "${GREEN}✓${NC} Pywal: palette generated from wallpaper"
     else
         echo -e "${YELLOW}⚠ pywal not installed. Install python-pywal.${NC}"
     fi
 else
-    echo -e "${YELLOW}⚠ Wallpaper not found at wallpapers/frieren.jpg${NC}"
+    echo -e "${YELLOW}⚠ Wallpaper not found at wallpapers/wallpaper.png${NC}"
 fi
 
 # ──────────────────────────────────────────────────
@@ -167,8 +167,8 @@ if command -v sddm &> /dev/null; then
         sudo mkdir -p /usr/share/sddm/themes/sugar-dark
         sudo cp -r "$DOTFILES_DIR/sddm/themes/sugar-dark/"* /usr/share/sddm/themes/sugar-dark/
 
-        if [ -f "$DOTFILES_DIR/wallpapers/frieren.jpg" ]; then
-            sudo cp "$DOTFILES_DIR/wallpapers/frieren.jpg" /usr/share/sddm/themes/sugar-dark/
+        if [ -f "$DOTFILES_DIR/wallpapers/wallpaper.png" ]; then
+            sudo cp "$DOTFILES_DIR/wallpapers/wallpaper.png" /usr/share/sddm/themes/sugar-dark/
         fi
 
         sudo cp "$DOTFILES_DIR/sddm/sddm.conf" /etc/sddm.conf

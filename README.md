@@ -81,4 +81,8 @@ sddm qt5-declarative qt5-graphicaleffects qt5-quickcontrols2 qt5-svg
 
 ```bash
 wal -i ~/Imagens/wallpapers/your-image.jpg
+
+> ℹ️ A `wallpapers/wallpaper.png` padrão é um gradiente neutro.
+> Substitua pela sua própria imagem antes de rodar o install.sh,
+> ou coloque manualmente em `~/Imagens/wallpapers/` e rode `wal -i`.
 ```
