@@ -1,21 +1,164 @@
-# Modificador (Alt ou Super, você escolhe)
-set $mod Mod1   # Alt
+# Modifier (Alt)
+set $mod Mod1
 
-# Cores das bordas
-client.focused          #6A9BB0 #6A9BB0 #C0CAF5 #6A9BB0   #6A9BB0
-client.focused_inactive #5C4A72 #5C4A72 #C0CAF5 #5C4A72   #5C4A72
-client.unfocused        #1A1B26 #1A1B26 #888888 #1A1B26   #1A1B26
-client.urgent           #E88C7D #E88C7D #1A1B26 #E88C7D   #E88C7D
-client.placeholder      #1A1B26 #1A1B26 #C0CAF5 #1A1B26   #1A1B26
-client.background       #1A1B26
+# Font
+font pango:JetBrainsMono Nerd Font 10
 
-# Wallpaper
-exec_always feh --bg-fill ~/Imagens/wallpapers/frieren.jpg
+# Mode variables
+set $mode_resize Resize
 
-# Bar (Polybar)
+# --- FRIEREN COLORS (borders) ---
+#            border    bg        text      indicator
+client.focused          #A77BFF #A77BFF #FFFFFF #A77BFF #A77BFF
+client.focused_inactive #7DC4E4 #7DC4E4 #E0E0E0 #7DC4E4 #7DC4E4
+client.unfocused        #0F0E17 #0F0E17 #888888 #0F0E17 #0F0E17
+client.urgent           #FF6B9D #FF6B9D #FFFFFF #FF6B9D #FF6B9D
+client.placeholder      #0F0E17 #0F0E17 #E0E0E0 #0F0E17 #0F0E17
+client.background       #0F0E17
+
+# --- GAPS ---
+gaps inner 8
+gaps outer 4
+smart_gaps off
+smart_borders on
+
+# --- KEYBINDINGS ---
+
+# Terminal
+bindsym $mod+Return exec alacritty
+
+# Close window
+bindsym $mod+q kill
+
+# Rofi (launcher)
+bindsym $mod+d exec rofi -show drun -show-icons
+
+# Navigation (arrows)
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Navigation (Vim)
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# Move windows (arrows)
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Move windows (Vim)
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Split
+bindsym $mod+s split horizontal
+bindsym $mod+v split vertical
+
+# Layout
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+
+# Scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Resize mode
+mode $mode_resize {
+    bindsym h resize grow width 10 px
+    bindsym j resize grow height 10 px
+    bindsym k resize shrink height 10 px
+    bindsym l resize shrink width 10 px
+    bindsym Left resize grow width 10 px
+    bindsym Down resize grow height 10 px
+    bindsym Up resize shrink height 10 px
+    bindsym Right resize shrink width 10 px
+    bindsym Return mode default
+    bindsym Escape mode default
+    bindsym $mod+r mode default
+}
+bindsym $mod+r mode $mode_resize
+
+# Reload / Exit
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec i3-msg exit
+
+# --- MEDIA / AUDIO ---
+
+# Volume
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+# Player
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioNext exec playerctl next
+
+# Brightness
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym XF86MonBrightnessDown exec light -U 5
+
+# --- SCREENSHOT ---
+bindsym Print exec flameshot gui
+bindsym Shift+Print exec flameshot full -p ~/Imagens
+
+# --- LOCK ---
+bindsym $mod+Shift+x exec ~/.config/i3/lock.sh
+
+# --- AUTOSTART ---
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nm-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id dunst
+
+# Wallpaper + pywal (generates colors for alacritty, rofi, etc.)
+exec_always wal -i ~/Imagens/wallpapers/frieren.jpg
+
+# Bar
 exec_always polybar main &
 
-# Compositor (Picom)
+# Compositor
 exec_always picom --config ~/.config/picom/picom.conf &
 
-# Demais atalhos (mantenha os seus)
+# --- ABNT2 KEYBOARD ---
+exec_always setxkbmap br abnt2
