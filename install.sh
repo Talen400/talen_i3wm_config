@@ -161,20 +161,18 @@ fi
 echo -e "\n${GREEN}[5/5] Setting up SDDM...${NC}"
 
 if command -v sddm &> /dev/null; then
-    # Frieren theme
-    if [ -d "$DOTFILES_DIR/sddm/themes/simple-frieren" ]; then
-        echo -e "${GREEN}✓${NC} Installing SDDM Frieren theme..."
-        sudo mkdir -p /usr/share/sddm/themes/simple-frieren
+    # Sugar Dark theme
+    if [ -d "$DOTFILES_DIR/sddm/themes/sugar-dark" ]; then
+        echo -e "${GREEN}✓${NC} Installing SDDM Sugar Dark theme..."
+        sudo mkdir -p /usr/share/sddm/themes/sugar-dark
+        sudo cp -r "$DOTFILES_DIR/sddm/themes/sugar-dark/"* /usr/share/sddm/themes/sugar-dark/
 
         if [ -f "$DOTFILES_DIR/wallpapers/frieren.jpg" ]; then
-            sudo cp "$DOTFILES_DIR/wallpapers/frieren.jpg" /usr/share/sddm/themes/simple-frieren/
+            sudo cp "$DOTFILES_DIR/wallpapers/frieren.jpg" /usr/share/sddm/themes/sugar-dark/
         fi
 
-        sudo cp "$DOTFILES_DIR/sddm/themes/simple-frieren/Main.qml" /usr/share/sddm/themes/simple-frieren/
-        sudo cp "$DOTFILES_DIR/sddm/themes/simple-frieren/theme.conf" /usr/share/sddm/themes/simple-frieren/
-
         sudo cp "$DOTFILES_DIR/sddm/sddm.conf" /etc/sddm.conf
-        echo -e "${GREEN}✓${NC} SDDM Frieren theme installed"
+        echo -e "${GREEN}✓${NC} SDDM Sugar Dark theme installed"
     fi
 
     echo -e "${YELLOW}[?] Enable SDDM as display manager? (y/N)${NC}"
