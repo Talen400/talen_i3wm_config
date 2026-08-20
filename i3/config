@@ -155,13 +155,13 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id dunst
 
 # Wallpaper + pywal (generates colors for alacritty, rofi, etc.)
-exec_always wal -i ~/Imagens/wallpapers/wallpaper.png 2>/dev/null
+exec --no-startup-id bash -c 'wal -i ~/Imagens/wallpapers/wallpaper.png 2>/dev/null || true'
 
 # Bar
-exec_always polybar main &
+exec --no-startup-id bash -c 'killall polybar 2>/dev/null; sleep 0.5; polybar main &'
 
 # Compositor
-exec_always picom --config ~/.config/picom/picom.conf &
+exec --no-startup-id bash -c 'killall picom 2>/dev/null; sleep 0.5; picom --config ~/.config/picom/picom.conf &'
 
 # --- ABNT2 KEYBOARD ---
 exec_always setxkbmap br abnt2

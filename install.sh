@@ -128,6 +128,8 @@ case "$PLATFORM" in
             sudo mkdir -p /etc/X11/xorg.conf.d
             sudo cp "$DOTFILES_DIR/xorg/20-vbox.conf" /etc/X11/xorg.conf.d/20-vbox.conf
             echo -e "${GREEN}✓${NC} Xorg modesetting config installed"
+        else
+            echo -e "${GREEN}✓${NC} Skipping xorg config (uses VBox default driver)"
         fi
 
         echo -e "${GREEN}✓${NC} vboxservice enabled, user added to video/input groups"

@@ -21,7 +21,6 @@ i3lock \
     --time-str="%H:%M" \
     --date-str="%a, %d %b" \
     --screen 1 \
-    --blur 5 \
     --clock \
     --indicator \
     --radius 120 \
